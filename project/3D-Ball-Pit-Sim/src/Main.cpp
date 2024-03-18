@@ -9,9 +9,9 @@ int main()
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
 
-    if (!sf::Shader::isAvailable())
+    if (!sf::Shader::isAvailable() || !sf::VertexBuffer::isAvailable())
     {
-        COUT("Shaders not available");
+        COUT("Shaders or vertex buffers are not available");
         return -1;
     }
 
@@ -24,14 +24,29 @@ int main()
     
     // Make a vertex buffer for points
     // https://www.sfml-dev.org/documentation/2.6.1/classsf_1_1VertexBuffer.php#details
-    sf::VertexBuffer circles(sf::Points, sf::VertexBuffer::Usage::Dynamic);
+    sf::VertexBuffer circles(sf::Points, sf::VertexBuffer::Dynamic);
     circles.create(100);
 
+    //sf::VertexBuffer::bind(&circles);
+
     // Make a buffer holding points
-    sf::Vertex arr[100];
-    for (int i = 0; i < 100; i++)
+    sf::Vertex arr[10];
+    for (int i = 0; i < 10; i++)
     {
-        arr[i].position = sf::Vector2f(float(i), float(i));
+        arr[i].position = sf::Vector2f(float(i)*10, float(i)*10);
+    }
+
+    for (int i = 0; i < 10; i++)
+    {
+        std::cout << arr[i].position.x << " " << arr[i].position.x << std::endl;
+    }
+
+
+
+
+    if (circles.update(arr))
+    {
+        COUT("able to update the vertex buffer");
     }
     
     
@@ -49,7 +64,8 @@ int main()
         window.clear();
         //window.draw(shape);
         //window.draw(shape, &shader);
-        window.draw(circles, &shader);
+        window.draw(circles);
+        window.draw(circles,0,10,&shader);
         window.display();
 
     }
